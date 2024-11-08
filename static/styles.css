@@ -1,0 +1,261 @@
+/* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    color: #333;
+    background-color: #f5f5f5;
+}
+
+/* Container */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Navigation Bar */
+.navbar {
+    background-color: transparent;
+    padding: 15px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 20px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #333;
+    font-size: 16px;
+}
+
+.cta-button {
+    background-color: #e63946;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.cta-button:hover {
+    background-color: #d62828;
+}
+
+/* Hero Section */
+.hero {
+    background-image: url('../static/hero-bg.jpg'); /* Use a background image */
+    background-size: cover;
+    background-position: center;
+    color: white;
+    text-align: center;
+    padding: 100px 0;
+    position: relative;
+}
+
+.hero::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Dark overlay to improve contrast */
+}
+
+.hero-content {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent background */
+    padding: 40px;
+    border-radius: 8px;
+    position: relative;
+    z-index: 1;
+    color: #333;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Soft shadow for emphasis */
+}
+
+.hero h1 {
+    font-size: 42px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #333; /* Dark color for readability */
+}
+
+.hero p {
+    font-size: 18px;
+    margin-bottom: 30px;
+    color: #555; /* Slightly lighter dark color for secondary text */
+}
+
+.hero h2 {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+/* Upload Form */
+.upload-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+.upload-form input[type="file"] {
+    padding: 12px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    max-width: 300px;
+    color: #333;
+    background-color: #f5f5f5; /* Light background for input */
+}
+
+.upload-form button {
+    padding: 12px 20px;
+    background-color: #e63946;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.upload-form button:hover {
+    background-color: #d62828;
+}
+
+/* Card Styling */
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    background-color: white;
+}
+
+.card-header {
+    background-color: #b0c4de; /* Light Steel Blue - softer pastel shade */
+    color: #333; /* Darker text for readability */
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.card-header:hover {
+    background-color: #a1b8d0; /* Slightly darker shade on hover */
+}
+
+.card-header h4 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.card-content {
+    display: none; /* Initially hidden */
+    padding: 15px;
+    background-color: #f9f9f9;
+}
+
+.card-content ul {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin: 0;
+    text-align: left; /* Align text to the left */
+}
+
+.card-content ul li {
+    margin-bottom: 10px; /* Add space between each list item */
+    text-align: left; /* Ensure text is left-aligned */
+}
+
+.icon {
+    font-size: 20px;
+    margin-right: 10px;
+}
+
+.toggle-icon {
+    font-size: 18px;
+    margin-left: 10px;
+    font-weight: bold;
+}
+
+.toggle-json {
+    margin-bottom: 20px;
+}
+
+button {
+    padding: 8px 16px;
+    background-color: #e63946;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #d62828;
+}
+
+/* JSON View */
+pre {
+    background-color: #f0f0f0;
+    padding: 15px;
+    border-radius: 8px;
+    overflow-x: auto;
+    max-height: 400px;
+}
+
+/* Footer */
+footer {
+    background-color: #333;
+    color: #f5f5f5;
+    text-align: center;
+    padding: 20px 0;
+}
+
+footer p {
+    margin: 5px 0;
+}
+
+footer a {
+    color: #f5f5f5;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}

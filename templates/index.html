@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Legal Document Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="#" class="logo">LegalAnalyzer</a>
+            <ul class="nav-links">
+                <li><a href="#">What We Do</a></li>
+                <li><a href="#">Results</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+                
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="container hero-content">
+            <h1>Analyze Legal Documents Instantly</h1>
+            <p>Our tool helps you extract clauses and obligations with ease. See how it can benefit you today.</p>
+            <form action="/" method="POST" enctype="multipart/form-data" class="upload-form">
+                <input type="file" name="file" accept=".pdf" required placeholder="Upload your document">
+                <button type="submit">Analyze Document</button>
+            </form>
+        </div>
+    </header>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Legal Document Analyzer. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

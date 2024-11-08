@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Analysis Results - Legal Document Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <h1>Legal Document Analyzer</h1>
+            <p>Your results are ready. Review the extracted clauses and obligations below.</p>
+        </div>
+    </header>
+
+    <!-- Hero Section for Results -->
+    <section class="hero">
+        <div class="container hero-content">
+            <h2>Document Analysis Results</h2>
+            <p>View and explore the identified clauses and obligations from your document.</p>
+
+            <!-- Toggle JSON Button -->
+            <div class="toggle-json">
+                <button onclick="toggleJSON()">Toggle JSON View</button>
+            </div>
+
+            <!-- JSON View (Hidden by default) -->
+            <pre id="json-view" style="display: none;">{{ result | tojson(indent=2) }}</pre>
+            
+            <!-- Structured View -->
+            <div id="structured-view">
+                <!-- Clauses Section -->
+                <h3>Clauses</h3>
+                <div class="section">
+                    {% for clause_type, clauses in result.clauses.items() %}
+                    <div class="card">
+                        <div class="card-header" onclick="toggleContent(this)">
+                            <span class="icon">📄</span>
+                            <h4>{{ clause_type }}</h4>
+                            <span class="toggle-icon">+</span>
+                        </div>
+                        <div class="card-content" style="display: none;">
+                            <ul>
+                                {% for clause in clauses %}
+                                <li>{{ clause }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Obligations Section -->
+                <h3>Obligations</h3>
+                <div class="section">
+                    {% for obligation_type, obligations in result.obligations.items() %}
+                    <div class="card">
+                        <div class="card-header" onclick="toggleContent(this)">
+                            <span class="icon">✔️</span>
+                            <h4>{{ obligation_type }}</h4>
+                            <span class="toggle-icon">+</span>
+                        </div>
+                        <div class="card-content" style="display: none;">
+                            <ul>
+                                {% for obligation in obligations %}
+                                <li>{{ obligation }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Legal Document Analyzer. All rights reserved.</p>
+            <p><a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+        </div>
+    </footer>
+
+    <script>
+        function toggleContent(header) {
+            const content = header.nextElementSibling;
+            const isHidden = content.style.display === "none";
+            content.style.display = isHidden ? "block" : "none";
+            
+            // Update the toggle icon
+            const toggleIcon = header.querySelector(".toggle-icon");
+            toggleIcon.textContent = isHidden ? "−" : "+";
+        }
+        
+        function toggleJSON() {
+            const jsonView = document.getElementById('json-view');
+            const structuredView = document.getElementById('structured-view');
+            const isJsonVisible = jsonView.style.display === "block";
+            jsonView.style.display = isJsonVisible ? "none" : "block";
+            structuredView.style.display = isJsonVisible ? "block" : "none";
+        }
+    </script>
+</body>
+</html>

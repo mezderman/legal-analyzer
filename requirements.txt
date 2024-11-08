@@ -1,0 +1,5 @@
+flask
+openai
+pdf2image
+pytesseract
+opencv-python
