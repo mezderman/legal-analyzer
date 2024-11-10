@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 from utils.ocr import extract_text_from_pdf
 from utils.llm_analysis import analyze_text_with_llm
 from utils.json_cleaner import clean_and_parse_json
@@ -6,6 +6,10 @@ import os
 
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = "uploads"
+
+@app.route("/uploads/<filename>")
+def uploaded_file(filename):
+    return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
 
 @app.route("/", methods=["GET", "POST"])
 def index():

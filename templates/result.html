@@ -30,48 +30,67 @@
             
             <!-- Structured View -->
             <div id="structured-view">
-                <!-- Clauses Section -->
-                <h3>Clauses</h3>
-                <div class="section">
-                    {% for clause_type, clauses in result.clauses.items() %}
-                    <div class="card">
-                        <div class="card-header" onclick="toggleContent(this)">
-                            <span class="icon">📄</span>
-                            <h4>{{ clause_type }}</h4>
-                            <span class="toggle-icon">+</span>
-                        </div>
-                        <div class="card-content" style="display: none;">
-                            <ul>
-                                {% for clause in clauses %}
-                                <li>{{ clause }}</li>
-                                {% endfor %}
-                            </ul>
-                        </div>
+               <!-- Clauses Section -->
+            <!-- Clauses Section -->
+            <h3>Clauses</h3>
+            <div class="section">
+                {% for clause_type, clauses in result.clauses.items() %}
+                <div class="card">
+                    <div class="card-header" onclick="toggleContent(this)">
+                        <span class="icon">📄</span>
+                        <h4>{{ clause_type }}</h4>
+                        <span class="toggle-icon">+</span>
                     </div>
-                    {% endfor %}
-                </div>
-
-                <!-- Obligations Section -->
-                <h3>Obligations</h3>
-                <div class="section">
-                    {% for obligation_type, obligations in result.obligations.items() %}
-                    <div class="card">
-                        <div class="card-header" onclick="toggleContent(this)">
-                            <span class="icon">✔️</span>
-                            <h4>{{ obligation_type }}</h4>
-                            <span class="toggle-icon">+</span>
-                        </div>
-                        <div class="card-content" style="display: none;">
-                            <ul>
-                                {% for obligation in obligations %}
-                                <li>{{ obligation }}</li>
-                                {% endfor %}
-                            </ul>
-                        </div>
+                    <div class="card-content" style="display: none;">
+                        <ul class="checkbox-list">
+                            {% for clause in clauses %}
+                            <li>
+                                <label>
+                                    <input type="checkbox" data-text="{{ clause }}" onchange="handleCheckbox(this)"> {{ clause }}
+                                </label>
+                            </li>
+                            {% endfor %}
+                        </ul>
                     </div>
-                    {% endfor %}
                 </div>
+                {% endfor %}
             </div>
+
+            <!-- Obligations Section -->
+            <h3>Obligations</h3>
+            <div class="section">
+                {% for obligation_type, obligations in result.obligations.items() %}
+                <div class="card">
+                    <div class="card-header" onclick="toggleContent(this)">
+                        <span class="icon">✔️</span>
+                        <h4>{{ obligation_type }}</h4>
+                        <span class="toggle-icon">+</span>
+                    </div>
+                    <div class="card-content" style="display: none;">
+                        <ul class="checkbox-list">
+                            {% for obligation in obligations %}
+                            <li>
+                                <label>
+                                    <input type="checkbox" data-text="{{ obligation }}" onchange="handleCheckbox(this)"> {{ obligation }}
+                                </label>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PDF Viewer Section -->
+    <section class="pdf-viewer container">
+
+        <!-- Canvas and Text Layer for PDF Rendering -->
+        <div style="position: relative;">
+            <canvas id="pdfCanvas"></canvas>
+            <div id="textLayer" style="position: absolute; top: 0; left: 0; pointer-events: none;"></div>
         </div>
     </section>
 
@@ -83,7 +102,99 @@
         </div>
     </footer>
 
+    <!-- PDF.js and Custom JavaScript for PDF Handling and Highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
     <script>
+        // Set up PDF.js worker
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
+
+        const pdfUrl = "{{ url_for('uploaded_file', filename='SampleContract-Shuttle.pdf') }}";
+        let pdfDoc = null;
+        let canvas = document.getElementById('pdfCanvas');
+        let ctx = canvas.getContext('2d');
+        let textLayerDiv = document.getElementById('textLayer');
+
+        // Load the PDF document
+        pdfjsLib.getDocument(pdfUrl).promise.then((pdf) => {
+            pdfDoc = pdf;
+            renderPage(1);
+        });
+
+        // Render the PDF page on the canvas and set up the text layer
+        function renderPage(pageNum) {
+            pdfDoc.getPage(pageNum).then((page) => {
+                const viewport = page.getViewport({ scale: 1.5 });
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+
+                const renderContext = {
+                    canvasContext: ctx,
+                    viewport: viewport
+                };
+                page.render(renderContext).promise.then(() => {
+                    renderTextLayer(page, viewport);
+                });
+            });
+        }
+
+        // Render the text layer for highlighting
+        function renderTextLayer(page, viewport) {
+            page.getTextContent().then((textContent) => {
+                textLayerDiv.innerHTML = ''; // Clear previous text layer
+                textLayerDiv.style.width = `${viewport.width}px`;
+                textLayerDiv.style.height = `${viewport.height}px`;
+
+                // Loop through each text item and create a positioned div
+                textContent.items.forEach((item) => {
+                    const textDiv = document.createElement('div');
+                    textDiv.textContent = item.str;
+
+                    // Set text position, scaling, and rotation
+                    const transform = pdfjsLib.Util.transform(
+                        pdfjsLib.Util.transform(viewport.transform, item.transform),
+                        [1, 0, 0, -1, 0, 0]
+                    );
+
+                    textDiv.style.left = `${transform[4]}px`;
+                    textDiv.style.top = `${transform[5] - item.height}px`;
+                    textDiv.style.fontSize = `${item.height}px`;
+                    textDiv.style.position = 'absolute';
+                    textDiv.style.whiteSpace = 'pre';
+                    textDiv.classList.add('textLayer');
+
+                    textLayerDiv.appendChild(textDiv);
+                });
+            });
+        }
+
+        function handleCheckbox(checkbox) {
+            if (checkbox.checked) {
+                // Get the text from the data attribute
+                const fullText = checkbox.getAttribute('data-text');
+
+                // Extract the first two words only
+                const searchText = fullText.split(' ').slice(0, 2).join(' ');
+
+                // Call the search and highlight function with the extracted words
+                searchAndHighlight(searchText);
+            }
+        }
+
+        // Search and highlight text in the PDF
+        function searchAndHighlight(searchText) {
+            if (!searchText) return;
+
+            // Clear previous highlights
+            document.querySelectorAll('.highlight').forEach(el => el.classList.remove('highlight'));
+
+            // Highlight matching text in the text layer
+            document.querySelectorAll('.textLayer').forEach(textDiv => {
+                if (textDiv.textContent.toLowerCase().includes(searchText.toLowerCase())) {
+                    textDiv.classList.add('highlight');
+                }
+            });
+        }
+
         function toggleContent(header) {
             const content = header.nextElementSibling;
             const isHidden = content.style.display === "none";
@@ -102,5 +213,21 @@
             structuredView.style.display = isJsonVisible ? "block" : "none";
         }
     </script>
+
+    <!-- CSS for Highlighting in the Text Layer -->
+    <style>
+        .textLayer {
+            color: transparent; /* Hide actual text color */
+            position: absolute;
+            transform-origin: 0 0;
+            white-space: pre;
+            pointer-events: none;
+        }
+
+        .highlight {
+            background-color: yellow; /* Highlight color */
+            color: black; /* Make text visible in highlight */
+        }
+    </style>
 </body>
 </html>

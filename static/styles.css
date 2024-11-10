@@ -259,3 +259,33 @@ footer a {
 footer a:hover {
     text-decoration: underline;
 }
+
+.textLayer {
+    color: transparent; /* Hide actual text color */
+    position: absolute;
+    transform-origin: 0 0;
+    white-space: pre;
+    pointer-events: none;
+}
+
+.highlight {
+    background-color: yellow; /* Highlight color */
+    color: black; /* Make text visible in highlight */
+}
+
+
+/* Remove default list styling and add spacing */
+.checkbox-list {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.checkbox-list li {
+    margin-bottom: 10px; /* Space between checkboxes */
+    display: flex;
+    align-items: center;
+}
+
+.checkbox-list input[type="checkbox"] {
+    margin-right: 8px; /* Space between checkbox and text */
+}
